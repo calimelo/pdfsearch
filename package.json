@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/calimelo/pdfsearch#readme",
   "dependencies": {
-    "pdf-parse": "^1.1.1",
     "textract": "^2.5.0"
   }
 }
