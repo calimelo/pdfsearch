@@ -3,7 +3,6 @@ const args = process.argv.slice(2); //folder
 //we will search for telephone numbers within the pdf files using regex
 // const regex = /(\d{3})\D*(\d{3})\D*(\d{4})/g;
 //^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
-const regex = /(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/g;
 const fs = require('fs');
 const path = require('path');
 //use textract to extract text from pdf files
@@ -12,6 +11,8 @@ console.clear();
 
 const folder = args[0];
 const filetype = args[1] || 'pdf';
+const regex = args[2] || /(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/g;
+
 if (!folder) {
   console.log('Please provide a folder path');
   process.exit(1);
