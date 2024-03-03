@@ -8,7 +8,9 @@
 
 ```searchterm``` is also optional, by default it searches for phone numbers by regex. 
 
-Example: ```node pdfsearch.js /path/to/folder pdf "search term"```
+Example: ```node pdfsearch.js c:\myfiles pdf potato```
+
+The output will hopefully be a csv file.
 
 ## Installation
 
