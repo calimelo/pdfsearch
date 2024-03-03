@@ -1,2 +1,2 @@
 # pdfsearch
-usage: node pdfsearch.js <folder>
+usage: node pdfsearch.js folder
