@@ -11,7 +11,17 @@
     "type": "git",
     "url": "git+https://github.com/calimelo/pdfsearch.git"
   },
-  "keywords": [],
+  "keywords": [
+    "search",
+    "pdf",
+    "text",
+    "textract",
+    "pdf-parse",
+    "nodejs",
+    "nexe",
+    "exe",
+    "windows"
+  ],
   "author": "Dr.Kaan Gunduz",
   "license": "ISC",
   "bugs": {
