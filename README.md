@@ -2,8 +2,9 @@
 
 ## Requires: 
 
-java jre 8 or later (https://www.java.com/download/)
-apache tika 2.9.1 or later (https://tika.apache.org/download.html)
+*java jre 8 or later (https://www.java.com/download/)
+*node.js 16 or later (https://nodejs.org/en/download/)
+*apache tika 2.9.1 or later (https://tika.apache.org/download.html)
 
 ## Usage: 
 
