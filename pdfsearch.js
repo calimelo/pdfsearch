@@ -3,20 +3,54 @@ const args = process.argv.slice(2); //folder
 //we will search for telephone numbers within the pdf files using regex
 // const regex = /(\d{3})\D*(\d{3})\D*(\d{4})/g;
 //^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
-const fs = require('fs');
-const path = require('path');
-//use textract to extract text from pdf files
-const textract = require('textract');
+const LLL = console.log;
 console.clear();
+console.debug = console.log = function () {};
+
+const fs = require('fs');
+
+const execsync = require('child_process').execSync;
+const path = require('path');
+if (!fs.existsSync('tika.jar')) {
+  LLL('tika not found');
+  process.exit(1);
+}
+
+//check if java is installed
+const options = {
+  encoding: 'utf8',
+  maxBuffer: 1024 * 1024 * 10,
+  //hide stdio
+  stdio: ['ignore', 'pipe', 'ignore'],
+  encoding: 'utf8',
+};
+const java = execsync('java -version', options, (err, stdout, stderr) => {
+  if (err) {
+    LLL('Error reading java version');
+    return;
+  }
+  if (stderr) {
+    LLL('Error reading java version');
+    return;
+  }
+});
+if (java.includes('not recognized')) {
+  LLL('Java not found');
+  process.exit(1);
+}
+const files = [];
 
 const folder = args[0];
 const filetype = args[1] || 'pdf';
 const regex = args[2] || /(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/g;
-
 if (!folder) {
-  console.log('Please provide a folder path');
+  LLL('Please provide a folder path');
   process.exit(1);
 }
+LLL('Searching for files in: ', folder);
+LLL('Searching for: ', regex);
+LLL('File type: ', filetype);
+
 //create a report file
 fs.writeFileSync('foundFiles.csv', 'file,matches\n');
 // const files = [];
@@ -26,7 +60,7 @@ async function searchForWordInPdfFiles(folder) {
   try {
     contents = fs.readdirSync(folder);
   } catch (err) {
-    console.log('Error reading ' + folder + ' folder');
+    LLL('Error reading ' + folder + ' folder');
     return;
   }
 
@@ -35,38 +69,56 @@ async function searchForWordInPdfFiles(folder) {
     const stat = fs.statSync(contentPath);
     if (stat.isDirectory()) {
       searchForWordInPdfFiles(contentPath);
-    } else if (contentPath.endsWith(filetype)) {
-      //search for pdf files but it can be any file type you want
-      //   files.push(contentPath);
+    } else if (contentPath.endsWith(filetype) || contentPath.endsWith(filetype.toUpperCase())) {
       counter++;
-      extractTextFromFile(contentPath);
+      files.push(contentPath);
     }
   });
 }
-
 async function extractTextFromFile(file) {
-  textract.fromFileWithPath(file, async function (error, text) {
-    if (error) {
-      console.log('Error extracting text from ' + file + ' file');
+  LLL('Extracting text from file: ', file);
+  const command = `java -Djava.awt.headless=true -Xmx1024m -jar tika.jar -t "${file}"`;
+  const options = {
+    encoding: 'utf8',
+    maxBuffer: 1024 * 1024 * 10,
+    //hide stdio
+    stdio: ['ignore', 'pipe', 'ignore'],
+  };
+
+  const result = execsync(command, options, (err, stdout, stderr) => {
+    if (err) {
+      LLL('Error reading pdf file: ', file);
       return;
     }
-    const matches = text.match(regex);
-    if (matches) {
-      fs.appendFileSync('foundFiles.csv', `${file}, [${matches.join(';')}]\n`);
+    if (stderr) {
+      LLL('Error reading pdf file: ', file);
+      return;
     }
   });
+
+  if (result) {
+    const matches = result.toString().match(regex);
+    if (matches) {
+      LLL('Found in file:', matches.length);
+      fs.appendFileSync('foundFiles.csv', `${file}, [${matches.join(';')}]\n`);
+      return;
+    }
+  } else {
+    LLL('No text found in file: ', file);
+    return;
+  }
 }
 
-// async function processFiles() {
-//   files.forEach((file) => {
-//     extractTextFromFile(file);
-//   });
-// }
+async function processFiles() {
+  files.forEach((file) => {
+    extractTextFromFile(file);
+  });
+}
 
 async function main() {
   await searchForWordInPdfFiles(folder);
-  console.log('Files found: ', counter);
-  //   await processFiles();
+  LLL('Files found: ', counter);
+  await processFiles();
 }
 
 main();
