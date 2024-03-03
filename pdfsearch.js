@@ -8,16 +8,18 @@ const fs = require('fs');
 const path = require('path');
 //use textract to extract text from pdf files
 const textract = require('textract');
+console.clear();
 
 const folder = args[0];
+const filetype = args[1] || 'pdf';
 if (!folder) {
   console.log('Please provide a folder path');
   process.exit(1);
 }
 //create a report file
 fs.writeFileSync('foundFiles.csv', 'file,matches\n');
-const files = [];
-
+// const files = [];
+let counter = 0;
 async function searchForWordInPdfFiles(folder) {
   let contents;
   try {
@@ -32,8 +34,11 @@ async function searchForWordInPdfFiles(folder) {
     const stat = fs.statSync(contentPath);
     if (stat.isDirectory()) {
       searchForWordInPdfFiles(contentPath);
-    } else if (contentPath.endsWith('.pdf')) {
-      files.push(contentPath);
+    } else if (contentPath.endsWith(filetype)) {
+      //search for pdf files but it can be any file type you want
+      //   files.push(contentPath);
+      counter++;
+      extractTextFromFile(contentPath);
     }
   });
 }
@@ -51,15 +56,16 @@ async function extractTextFromFile(file) {
   });
 }
 
-async function processFiles() {
-  files.forEach((file) => {
-    extractTextFromFile(file);
-  });
-}
+// async function processFiles() {
+//   files.forEach((file) => {
+//     extractTextFromFile(file);
+//   });
+// }
 
 async function main() {
   await searchForWordInPdfFiles(folder);
-  await processFiles();
+  console.log('Files found: ', counter);
+  //   await processFiles();
 }
 
 main();
