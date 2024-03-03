@@ -1,6 +1,6 @@
 # pdfsearch
 
-usage: 
+## Usage: 
 
 ```node pdfsearch.js folder filetype searchterm```
 
@@ -12,7 +12,7 @@ Example: ```node pdfsearch.js /path/to/folder pdf "search term"```
 
 Example: ```node pdfsearch.js /path/to/folder "search term"```
 
-# Installation
+## Installation
 
 ```npm install```
 
