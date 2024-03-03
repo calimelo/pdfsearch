@@ -1,0 +1,24 @@
+{
+  "name": "pdfsearch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calimelo/pdfsearch.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calimelo/pdfsearch/issues"
+  },
+  "homepage": "https://github.com/calimelo/pdfsearch#readme",
+  "dependencies": {
+    "pdf-parse": "^1.1.1",
+    "textract": "^2.5.0"
+  }
+}
